@@ -296,6 +296,19 @@ def manualLogoTasks():
     def slant(n):
         return f"(move 0d (/a 1a {n}))"
 
+    # for n,l,s in [(3,"1l",8),
+    #               (4,"(*d 1d 3)",None),
+    #               (5,"1l",None),
+    #               (6,"(*d 1d 2)",5),
+    #               (7,"1l",None),
+    #               (8,"(/d 1d 2)",None)]:
+    #     T(f"{n}-gon {l}{'' if s is None else ' slanted '+str(s)}",
+    #       f"""
+    #       ({'' if s is None else slant(s)}
+    #        (loop i {n}
+    #         (move {l} (/a 1a {n}))))
+    #       """,
+    #       needToTrain=True)
     for n,l,s in [(3,"1l",8),
                   (4,"(*d 1d 3)",None),
                   (5,"1l",None),
@@ -308,7 +321,7 @@ def manualLogoTasks():
            (loop i {n}
             (move {l} (/a 1a {n}))))
           """,
-          needToTrain=True)
+          needToTrain=False)
     for n,l,s in [(3,"(*d 1l 2)",None),
                 (4,"(*d 1d 4)",None),
                 (5,"(*d 1d 2)",None),
@@ -693,6 +706,9 @@ def manualLogoTasks():
           (embed (loop j 4 (move (*d 1d i) (/a 1a 4)))))
           """%n,
           needToTrain=n == 5)
+
+    tasks = tasks[:6]
+    print(f"\nNumber of tasks{len(tasks)}\n")
     return tasks
 
 def montageTasks(tasks, prefix="", columns=None, testTrain=False):
@@ -711,8 +727,10 @@ def montageTasks(tasks, prefix="", columns=None, testTrain=False):
               for a in arrays]
     i = montage(arrays, columns=columns)
 
-    import scipy.misc        
-    scipy.misc.imsave('/tmp/%smontage.png'%prefix, i)
+#    import scipy.misc        
+#    scipy.misc.imsave('/tmp/%smontage.png'%prefix, i)
+    import imageio
+    imageio.imwrite('/tmp/%smontage.png'%prefix,i)
     if testTrain:
         trainingTasks = arrays[:sum(t.mustTrain for t in tasks)]
         testingTasks = arrays[sum(t.mustTrain for t in tasks):]
@@ -721,7 +739,8 @@ def montageTasks(tasks, prefix="", columns=None, testTrain=False):
         arrays = trainingTasks + testingTasks
     else:
         random.shuffle(arrays)
-    scipy.misc.imsave('/tmp/%srandomMontage.png'%prefix, montage(arrays, columns=columns))
+    imageio.imwrite('/tmp/%srandomMontage.png'%prefix, montage(arrays, columns=columns))
+#    scipy.misc.imsave('/tmp/%srandomMontage.png'%prefix, montage(arrays, columns=columns))
 
 def demoLogoTasks():
     import scipy.misc
